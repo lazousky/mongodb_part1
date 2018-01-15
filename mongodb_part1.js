@@ -106,6 +106,8 @@ db.restaurants.getIndexes()
 //  4.3
 // -------------------------
 db.restaurants.createIndex({"restaurant_id" : 1, "borough" : 1})
+
+db.restaurants.find({ restaurant_id: "41098650" }, { _id: 0, borough: 1 }).explain("executionStats")
 // "winningPlan" : {
 //     "stage" : "PROJECTION",
 //     "transformBy" : {
@@ -155,3 +157,175 @@ db.restaurants.createIndex({"restaurant_id" : 1, "borough" : 1})
 //             "advanced" : 1,
 //             "needTime" : 0,
 //             "needYield" : 0,
+
+
+// ------------------------- 
+//  4.4
+// -------------------------
+db.restaurants.createIndex({"cuisine" : 1}, {"partialFilterExpression" : {"borough":{ $eq: "Staten Island" } }})
+//
+//
+db.restaurants.find({ borough: "Staten Island", cuisine: "American" }).explain("executionStats")
+// "winningPlan" : {
+//     "stage" : "FETCH",
+//     "filter" : {
+//             "borough" : {
+//                     "$eq" : "Staten Island"
+//             }
+//     },
+//     "inputStage" : {
+//             "stage" : "IXSCAN",
+//             "keyPattern" : {
+//                     "cuisine" : 1
+//             },
+//             "indexName" : "cuisine_1",
+//             "isMultiKey" : false,
+//             "multiKeyPaths" : {
+//                     "cuisine" : [ ]
+//             },
+//             "isUnique" : false,
+//             "isSparse" : false,
+//             "isPartial" : true,
+//             "indexVersion" : 2,
+//             "direction" : "forward",
+//             "indexBounds" : {
+//                     "cuisine" : [
+//                             "[\"American\", \"American\"]"
+//                     ]
+//             }
+//     }
+// }
+//
+// "executionStats" : {
+//     "executionSuccess" : true,
+//     "nReturned" : 244,
+//     "executionTimeMillis" : 1,
+//     "totalKeysExamined" : 244,
+//     "totalDocsExamined" : 244,
+//     "executionStages" : {
+//             "stage" : "FETCH",
+//             "filter" : {
+//                     "borough" : {
+//                             "$eq" : "Staten Island"
+//                     }
+//             },
+//             "nReturned" : 244,
+//             "executionTimeMillisEstimate" : 0,
+//             "works" : 245,
+//             "advanced" : 244,
+//             "needTime" : 0,
+//             "needYield" : 0,
+//             "saveState" : 1,
+//             "restoreState" : 1,
+//             "isEOF" : 1,
+//             "invalidates" : 0,
+//             "docsExamined" : 244,
+//             "alreadyHasObj" : 0,
+//             "inputStage" : {
+//                     "stage" : "IXSCAN",
+//                     "nReturned" : 244,
+//                     "executionTimeMillisEstimate" : 0,
+//                     "works" : 245,
+//                     "advanced" : 244,
+//                     "needTime" : 0,
+//                     "needYield" : 0
+//
+db.restaurants.find({ borough: "Staten Island", name: "Bagel Land" }).explain("executionStats")
+// "winningPlan" : {
+//     "stage" : "COLLSCAN",
+//     "filter" : {
+//             "$and" : [
+//                     {
+//                             "borough" : {
+//                                     "$eq" : "Staten Island"
+//                             }
+//                     },
+//                     {
+//                             "name" : {
+//                                     "$eq" : "Bagel Land"
+//                             }
+//                     }
+//             ]
+//     },
+//     "direction" : "forward"
+// }
+//
+// "executionStats" : {
+//     "executionSuccess" : true,
+//     "nReturned" : 1,
+//     "executionTimeMillis" : 22,
+//     "totalKeysExamined" : 0,
+//     "totalDocsExamined" : 25359,
+//     "executionStages" : {
+//             "stage" : "COLLSCAN",
+//             "filter" : {
+//                     "$and" : [
+//                             {
+//                                     "borough" : {
+//                                             "$eq" : "Staten Island"
+//                                     }
+//                             },
+//                             {
+//                                     "name" : {
+//                                             "$eq" : "Bagel Land"
+//                                     }
+//                             }
+//                     ]
+//             },
+//             "nReturned" : 1,
+//             "executionTimeMillisEstimate" : 22,
+//             "works" : 25361,
+//             "advanced" : 1,
+//             "needTime" : 25359,
+//             "needYield" : 0,
+
+db.restaurants.find({ borough: "Queens", cuisine: "Pizza" }).explain("executionStats")
+// "winningPlan" : {
+//     "stage" : "COLLSCAN",
+//     "filter" : {
+//             "$and" : [
+//                     {
+//                             "borough" : {
+//                                     "$eq" : "Queens"
+//                             }
+//                     },
+//                     {
+//                             "cuisine" : {
+//                                     "$eq" : "Pizza"
+//                             }
+//                     }
+//             ]
+//     },
+//     "direction" : "forward"
+// },
+//
+//
+// "executionStats" : {
+//     "executionSuccess" : true,
+//     "nReturned" : 277,
+//     "executionTimeMillis" : 18,
+//     "totalKeysExamined" : 0,
+//     "totalDocsExamined" : 25359,
+//     "executionStages" : {
+//             "stage" : "COLLSCAN",
+//             "filter" : {
+//                     "$and" : [
+//                             {
+//                                     "borough" : {
+//                                             "$eq" : "Queens"
+//                                     }
+//                             },
+//                             {
+//                                     "cuisine" : {
+//                                             "$eq" : "Pizza"
+//                                     }
+//                             }
+//                     ]
+//             },
+//             "nReturned" : 277,
+//             "executionTimeMillisEstimate" : 30,
+//             "works" : 25361,
+//             "advanced" : 277,
+//             "needTime" : 25083,
+//             "needYield" : 0,
+
