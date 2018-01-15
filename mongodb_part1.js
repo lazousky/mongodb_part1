@@ -100,3 +100,58 @@ db.restaurants.getIndexes()
 //                 "ns" : "frontcamp.restaurants"
 //         }
 // ]
+
+
+// ------------------------- 
+//  4.3
+// -------------------------
+db.restaurants.createIndex({"restaurant_id" : 1, "borough" : 1})
+// "winningPlan" : {
+//     "stage" : "PROJECTION",
+//     "transformBy" : {
+//             "_id" : 0,
+//             "borough" : 1
+//     },
+//     "inputStage" : {
+//             "stage" : "IXSCAN",
+//             "keyPattern" : {
+//                     "restaurant_id" : 1,
+//                     "borough" : 1
+//             },
+//             "indexName" : "restaurant_id_1_borough_1",
+//             "isMultiKey" : false,
+//             "multiKeyPaths" : {
+//                     "restaurant_id" : [ ],
+//                     "borough" : [ ]
+//             },
+//             "isUnique" : false,
+//             "isSparse" : false,
+//             "isPartial" : false,
+//             "indexVersion" : 2,
+//             "direction" : "forward",
+//             "indexBounds" : {
+//                     "restaurant_id" : [
+//                             "[\"41098650\", \"41098650\"]"
+//                     ],
+//                     "borough" : [
+//                             "[MinKey, MaxKey]"
+//                     ]
+//             }
+//     }
+// }
+//
+//
+// "executionStats" : {
+//     "executionSuccess" : true,
+//     "nReturned" : 1,
+//     "executionTimeMillis" : 1,
+//     "totalKeysExamined" : 1,
+//     "totalDocsExamined" : 0,
+//     "executionStages" : {
+//             "stage" : "PROJECTION",
+//             "nReturned" : 1,
+//             "executionTimeMillisEstimate" : 0,
+//             "works" : 2,
+//             "advanced" : 1,
+//             "needTime" : 0,
+//             "needYield" : 0,
