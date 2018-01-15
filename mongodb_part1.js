@@ -329,3 +329,166 @@ db.restaurants.find({ borough: "Queens", cuisine: "Pizza" }).explain("executionS
 //             "needTime" : 25083,
 //             "needYield" : 0,
 
+
+// ------------------------- 
+//  4.5
+// -------------------------
+db.restaurants.find({"grades.8.score" : {$lt: 7}}, {name:1, _id:0}).explain("executionStats")
+// "winningPlan" : {
+//     "stage" : "PROJECTION",
+//     "transformBy" : {
+//             "name" : 1,
+//             "_id" : 0
+//     },
+//     "inputStage" : {
+//             "stage" : "COLLSCAN",
+//             "filter" : {
+//                     "grades.8.score" : {
+//                             "$lt" : 7
+//                     }
+//             },
+//             "direction" : "forward"
+//     }
+// }
+//
+// "executionStats" : {
+//     "executionSuccess" : true,
+//     "nReturned" : 2,
+//     "executionTimeMillis" : 109,
+//     "totalKeysExamined" : 0,
+//     "totalDocsExamined" : 25359,
+//     "executionStages" : {
+//             "stage" : "PROJECTION",
+//             "nReturned" : 2,
+//             "executionTimeMillisEstimate" : 116,
+//             "works" : 25361,
+//             "advanced" : 2,
+//             "needTime" : 25358,
+//             "needYield" : 0,
+//             "saveState" : 199,
+//             "restoreState" : 199,
+//             "isEOF" : 1,
+//             "invalidates" : 0,
+//             "transformBy" : {
+//                     "name" : 1,
+//                     "_id" : 0
+//             },
+//             "inputStage" : {
+//                     "stage" : "COLLSCAN",
+//                     "filter" : {
+//                             "grades.8.score" : {
+//                                     "$lt" : 7
+//                             }
+//                     },
+//                     "nReturned" : 2,
+//                     "executionTimeMillisEstimate" : 116,
+//                     "works" : 25361,
+//                     "advanced" : 2,
+//                     "needTime" : 25358,
+//                     "needYield" : 0,
+
+db.restaurants.createIndex({"grades.8.score" : 1, "name" : 1})
+
+db.restaurants.find({"grades.8.score" : {$lt: 7}}, {name:1, _id:0}).explain("executionStats")
+// "winningPlan" : {
+//     "stage" : "PROJECTION",
+//     "transformBy" : {
+//             "name" : 1,
+//             "_id" : 0
+//     },
+//     "inputStage" : {
+//             "stage" : "IXSCAN",
+//             "keyPattern" : {
+//                     "grades.8.score" : 1,
+//                     "name" : 1
+//             },
+//             "indexName" : "grades.8.score_1_name_1",
+//             "isMultiKey" : true,
+//             "multiKeyPaths" : {
+//                     "grades.8.score" : [
+//                             "grades"
+//                     ],
+//                     "name" : [ ]
+//             },
+//             "isUnique" : false,
+//             "isSparse" : false,
+//             "isPartial" : false,
+//             "indexVersion" : 2,
+//             "direction" : "forward",
+//             "indexBounds" : {
+//                     "grades.8.score" : [
+//                             "[-inf.0, 7.0)"
+//                     ],
+//                     "name" : [
+//                             "[MinKey, MaxKey]"
+//                     ]
+//             }
+//     }
+// },
+// "rejectedPlans" : [ ]
+// },
+// "executionStats" : {
+// "executionSuccess" : true,
+// "nReturned" : 2,
+// "executionTimeMillis" : 0,
+// "totalKeysExamined" : 2,
+// "totalDocsExamined" : 0,
+// "executionStages" : {
+//     "stage" : "PROJECTION",
+//     "nReturned" : 2,
+//     "executionTimeMillisEstimate" : 0,
+//     "works" : 3,
+//     "advanced" : 2,
+//     "needTime" : 0,
+//     "needYield" : 0,
+//     "saveState" : 0,
+//     "restoreState" : 0,
+//     "isEOF" : 1,
+//     "invalidates" : 0,
+//     "transformBy" : {
+//             "name" : 1,
+//             "_id" : 0
+//     },
+//     "inputStage" : {
+//             "stage" : "IXSCAN",
+//             "nReturned" : 2,
+//             "executionTimeMillisEstimate" : 0,
+//             "works" : 3,
+//             "advanced" : 2,
+//             "needTime" : 0,
+//             "needYield" : 0,
+//             "saveState" : 0,
+//             "restoreState" : 0,
+//             "isEOF" : 1,
+//             "invalidates" : 0,
+//             "keyPattern" : {
+//                     "grades.8.score" : 1,
+//                     "name" : 1
+//             },
+//             "indexName" : "grades.8.score_1_name_1",
+//             "isMultiKey" : true,
+//             "multiKeyPaths" : {
+//                     "grades.8.score" : [
+//                             "grades"
+//                     ],
+//                     "name" : [ ]
+//             },
+//             "isUnique" : false,
+//             "isSparse" : false,
+//             "isPartial" : false,
+//             "indexVersion" : 2,
+//             "direction" : "forward",
+//             "indexBounds" : {
+//                     "grades.8.score" : [
+//                             "[-inf.0, 7.0)"
+//                     ],
+//                     "name" : [
+//                             "[MinKey, MaxKey]"
+//                     ]
+//             },
+//             "keysExamined" : 2,
+//             "seeks" : 1,
+//             "dupsTested" : 2,
+//             "dupsDropped" : 0,
+//             "seenInvalidated" : 0
+//     }
