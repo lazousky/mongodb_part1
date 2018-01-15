@@ -32,3 +32,71 @@ db.restaurants.find({cuisine : "Seafood", grades : { $elemMatch : {grade : "B", 
 // Result:
 // { "_id" : ObjectId("5a55e5eb2102716b78cb3897"), "borough" : "Bronx" }
 // { "_id" : ObjectId("5a55e5eb2102716b78cb3b15"), "borough" : "Manhattan" }
+
+
+// ------------------------- 
+//  4.1 Query
+// -------------------------
+db.restaurants.createIndex({name : 1})
+db.restaurants.find({ name: "Glorious Food" }).explain()
+// "winningPlan" : {
+//     "stage" : "FETCH",
+//     "inputStage" : {
+//             "stage" : "IXSCAN",
+//             "keyPattern" : {
+//                     "name" : 1
+//             },
+//             "indexName" : "name_1",
+//             "isMultiKey" : false,
+//             "multiKeyPaths" : {
+//                     "name" : [ ]
+//             },
+//             "isUnique" : false,
+//             "isSparse" : false,
+//             "isPartial" : false,
+//             "indexVersion" : 2,
+//             "direction" : "forward",
+//             "indexBounds" : {
+//                     "name" : [
+//                             "[\"Glorious Food\", \"Glorious Food\"]"
+//                     ]
+//             }
+//     }
+// }
+
+
+// ------------------------- 
+//  4.2
+// -------------------------
+db.restaurants.getIndexes()
+// [
+//         {
+//                 "v" : 2,
+//                 "key" : {
+//                         "_id" : 1
+//                 },
+//                 "name" : "_id_",
+//                 "ns" : "frontcamp.restaurants"
+//         },
+//         {
+//                 "v" : 2,
+//                 "key" : {
+//                         "name" : 1
+//                 },
+//                 "name" : "name_1",
+//                 "ns" : "frontcamp.restaurants"
+//         }
+// ]
+db.restaurants.dropIndex("name_1")
+//{ "nIndexesWas" : 2, "ok" : 1 }
+db.restaurants.getIndexes()
+// [
+//         {
+//                 "v" : 2,
+//                 "key" : {
+//                         "_id" : 1
+//                 },
+//                 "name" : "_id_",
+//                 "ns" : "frontcamp.restaurants"
+//         }
+// ]
